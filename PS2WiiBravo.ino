@@ -1,4 +1,5 @@
 #include <PS2X_lib.h>  //for v1.6
+#include "WMExtension.h"
 
 /******************************************************************
  * set pins connected to PS2 controller:
@@ -37,6 +38,8 @@ void setup(){
   Serial.begin(57600);
   
   delay(300);  //added delay to give wireless ps2 module some time to startup, before configuring it
+
+  WMExtension::init();
   
   error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
   
@@ -69,25 +72,43 @@ void setup(){
 
 byte vtriangle, vcircle, vcross, vsquare;
 
+int up, down, left, right;
+int start, select, home;
+int ab, bb, xb, yb;
+int lb, rb, zlb, zrb;
+int lx, ly, rx, ry;
+
 void loop() {
   if (error == 1) {
     return; 
   }
     
   ps2x.read_gamepad(false, vibrate);
+  up    = ps2x.Button(PSB_PAD_UP);
+  down  = ps2x.Button(PSB_PAD_DOWN);
+  left  = ps2x.Button(PSB_PAD_LEFT);
+  right = ps2x.Button(PSB_PAD_RIGHT);
 
-  vibrate = ps2x.Analog(PSAB_CROSS);  //this will set the large motor vibrate speed based on how hard you press the blue (X) button
-  if (ps2x.NewButtonState()) {        //will be TRUE if any button changes state (on to off, or off to on)
-    if(ps2x.Button(PSB_L3))
-      Serial.println("L3 pressed");
-    if(ps2x.Button(PSB_R3))
-      Serial.println("R3 pressed");
-    if(ps2x.Button(PSB_L2))
-      Serial.println("L2 pressed");
-    if(ps2x.Button(PSB_R2))
-      Serial.println("R2 pressed");
-  }
+  start  = ps2x.Button(PSB_START);
+  select = ps2x.Button(PSB_SELECT);
+  home = up && select;
+  
+  // buttons: 
+  //   x      A
+  // y   a  #   o
+  //   b      x
+  ab = ps2x.Button(PSB_CIRCLE);
+  bb = ps2x.Button(PSB_CROSS);
+  xb = ps2x.Button(PSB_TRIANGLE);
+  yb = ps2x.Button(PSB_SQUARE);
+  
+  lb = ps2x.Button(PSB_L1);
+  rb = ps2x.Button(PSB_R1);
+  zlb = ps2x.Button(PSB_L2);
+  zrb = ps2x.Button(PSB_R2);
 
+  lx = ly = rx = ry = 0;
+#if 0
   vtriangle = ps2x.Analog(PSAB_TRIANGLE);
   vcircle = ps2x.Analog(PSAB_CIRCLE);
   vcross = ps2x.Analog(PSAB_CROSS);
@@ -102,7 +123,20 @@ void loop() {
     Serial.print("; #");
     Serial.println(vsquare);
   }
+#endif
+#if 0
+  lx = ps2x.Analog(PSS_LX);
+  ly = ps2x.Analog(PSS_LY);
+  rx = ps2x.Analog(PSS_RX);
+  ry = ps2x.Analog(PSS_RY);
+#endif
 
+  WMExtension::set_button_data(left, right, up, down,
+    ab, bb, xb, yb, 
+    lb, rb,
+    select, start, home,     
+    lx, ly, rx, ry, 
+    zlb, zrb, lb, rb);
 
-  delay(50);  
+  delay(15);  
 }
