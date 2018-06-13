@@ -35,14 +35,13 @@ byte vibrate = 0;
 
 void setup(){
  
-  Serial.begin(57600);
+  Serial.begin(4800);
+  while (Serial == false)
+    ;
   
   delay(300);  //added delay to give wireless ps2 module some time to startup, before configuring it
 
-  WMExtension::init();
-  
-  error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
-  
+  error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);  
   if (error == 0){
     Serial.print("Found Controller, configured successful ");
   } else if (error == 1) {
@@ -52,6 +51,8 @@ void setup(){
   } else if (error == 3) {
     Serial.println("Controller refusing to enter Pressures mode, may not support it. ");
   }
+  Serial.print(F("error = "));
+  Serial.println(error);
   
   type = ps2x.readType(); 
   switch(type) {
@@ -68,6 +69,11 @@ void setup(){
       Serial.print("Wireless Sony DualShock Controller found ");
       break;
    }
+
+   Serial.print(F("type = "));
+   Serial.println(type);
+
+   WMExtension::init();
 }
 
 byte vtriangle, vcircle, vcross, vsquare;
@@ -135,8 +141,8 @@ void loop() {
     ab, bb, xb, yb, 
     lb, rb,
     select, start, home,     
-    lx, ly, rx, ry, 
+    lx, ly, rx, ry,  
     zlb, zrb, lb, rb);
 
-  delay(15);  
+  delay(14);  
 }
