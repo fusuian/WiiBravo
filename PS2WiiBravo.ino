@@ -35,7 +35,7 @@ byte vibrate = 0;
 
 void setup(){
  
-  Serial.begin(4800);
+  Serial.begin(38400);
   while (Serial == false)
     ;
   
@@ -56,24 +56,25 @@ void setup(){
   
   type = ps2x.readType(); 
   switch(type) {
-    case 0:
-      Serial.print("Unknown Controller type found ");
-      break;
-    case 1:
-      Serial.print("DualShock Controller found ");
-      break;
-    case 2:
-      Serial.print("GuitarHero Controller found ");
-      break;
+  case 0:
+    Serial.print("Unknown Controller type found ");
+    break;
+  case 1:
+    Serial.print("DualShock Controller found ");
+    break;
+  case 2:
+    Serial.print("GuitarHero Controller found ");
+    break;
 	case 3:
-      Serial.print("Wireless Sony DualShock Controller found ");
-      break;
-   }
+    Serial.print("Wireless Sony DualShock Controller found ");
+    break;
+  }
 
-   Serial.print(F("type = "));
-   Serial.println(type);
-
-   WMExtension::init();
+  Serial.print(F("type = "));
+  Serial.println(type);
+  
+  WMExtension::init();
+  Serial.println(F("WM init"));
 }
 
 byte vtriangle, vcircle, vcross, vsquare;
@@ -85,9 +86,12 @@ int lb, rb, zlb, zrb;
 int lx, ly, rx, ry;
 
 void loop() {
-  if (error == 1) {
+  Serial.print(F("type = "));
+  Serial.print(type);
+  Serial.print(F("; error = "));
+  Serial.println(error);
+  if(error == 1) //skip loop if no controller found
     return; 
-  }
     
   ps2x.read_gamepad(false, vibrate);
   up    = ps2x.Button(PSB_PAD_UP);
