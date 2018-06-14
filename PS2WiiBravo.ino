@@ -6,7 +6,7 @@ const int wii_ok_pin = 9;
 
 /******************************************************************
  * set pins connected to PS2 controller:
- *   - 1e column: original 
+ *   - 1e column: original
  *   - 2e colmun: Stef?
  * replace pin numbers by the ones you use
  ******************************************************************/
@@ -17,7 +17,7 @@ const int wii_ok_pin = 9;
 
 /******************************************************************
  * select modes of PS2 controller:
- *   - pressures = analog reading of push-butttons 
+ *   - pressures = analog reading of push-butttons
  *   - rumble    = motor rumbling
  * uncomment 1 of the lines for each mode selection
  ******************************************************************/
@@ -28,8 +28,8 @@ const int wii_ok_pin = 9;
 
 PS2X ps2x; // create PS2 Controller Class
 
-//right now, the library does NOT support hot pluggable controllers, meaning 
-//you must always either restart your Arduino after you connect the controller, 
+//right now, the library does NOT support hot pluggable controllers, meaning
+//you must always either restart your Arduino after you connect the controller,
 //or call config_gamepad(pins) again after connecting the controller.
 
 int error = 0;
@@ -37,7 +37,7 @@ byte type = 0;
 byte vibrate = 0;
 
 void setup(){
- 
+
   Serial.begin(38400);
   while (Serial == false)
     ;
@@ -46,11 +46,12 @@ void setup(){
   pinMode(wii_ok_pin, OUTPUT);
   digitalWrite(ps_ok_pin, LOW);
   digitalWrite(wii_ok_pin, LOW);
-  
+
   delay(300);
   error = 1;
   while (error != 0) {
-    error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);  
+    digitalWrite(ps_ok_pin, LOW);
+    error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
     if (error == 0){
       Serial.println("Found Controller, configured successful ");
       digitalWrite(ps_ok_pin, HIGH);
@@ -61,12 +62,13 @@ void setup(){
     } else if (error == 3) {
       Serial.println("Controller refusing to enter Pressures mode, may not support it. ");
     }
+    digitalWrite(ps_ok_pin, HIGH);
     delay(100);
   }
   Serial.print(F("error = "));
   Serial.println(error);
 
-  type = ps2x.readType(); 
+  type = ps2x.readType();
   switch(type) {
   case 0:
     Serial.println("Unknown Controller type found ");
@@ -89,9 +91,9 @@ void setup(){
     digitalWrite(ps_ok_pin, LOW);
     delay(250);
     digitalWrite(ps_ok_pin, HIGH);
-    delay(250);    
+    delay(250);
   }
-  
+
   WMExtension::init();
   Serial.println(F("WM init"));
   digitalWrite(wii_ok_pin, HIGH);
@@ -113,8 +115,8 @@ int lx, ly, rx, ry;
 
 void loop() {
   if(error == 1) //skip loop if no controller found
-    return; 
-    
+    return;
+
   ps2x.read_gamepad(false, vibrate);
   up    = ps2x.Button(PSB_PAD_UP);
   down  = ps2x.Button(PSB_PAD_DOWN);
@@ -124,8 +126,8 @@ void loop() {
   start  = ps2x.Button(PSB_START);
   select = ps2x.Button(PSB_SELECT);
   home = up && select;
-  
-  // buttons: 
+
+  // buttons:
   //   x      A
   // y   a  #   o
   //   b      x
@@ -175,11 +177,11 @@ void loop() {
   ry = ps2x.Analog(PSS_RY);
 
   WMExtension::set_button_data(left, right, up, down,
-    ab, bb, xb, yb, 
+    ab, bb, xb, yb,
     lb, rb,
-    select, start, home,     
-    lx, ly, rx, ry,  
+    select, start, home,
+    lx, ly, rx, ry,
     zlb, zrb, lb, rb);
 
-  delay(14);  
+  delay(14);
 }
