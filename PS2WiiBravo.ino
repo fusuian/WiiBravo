@@ -77,6 +77,11 @@ void setup(){
   Serial.println(F("WM init"));
 }
 
+const int thresh_high = 80;
+const int thresh_middle = 40; 
+const int thresh_low = 5;
+
+
 byte vtriangle, vcircle, vcross, vsquare;
 
 int up, down, left, right;
@@ -107,39 +112,50 @@ void loop() {
   //   x      A
   // y   a  #   o
   //   b      x
-  ab = ps2x.Button(PSB_CIRCLE);
-  bb = ps2x.Button(PSB_CROSS);
-  xb = ps2x.Button(PSB_TRIANGLE);
-  yb = ps2x.Button(PSB_SQUARE);
-  
-  lb = ps2x.Button(PSB_L1);
-  rb = ps2x.Button(PSB_R1);
-  zlb = ps2x.Button(PSB_L2);
-  zrb = ps2x.Button(PSB_R2);
+
+//  ab = ps2x.Button(PSB_CIRCLE);
+//  bb = ps2x.Button(PSB_CROSS);
+//  xb = ps2x.Button(PSB_TRIANGLE);
+//  yb = ps2x.Button(PSB_SQUARE);
+
+  lb = ps2x.Button(PSB_L2);
+  rb = ps2x.Button(PSB_R2);
+  zlb = ps2x.Button(PSB_L1);
+  zrb = ps2x.Button(PSB_R1);
 
   lx = ly = rx = ry = 0;
-#if 0
-  vtriangle = ps2x.Analog(PSAB_TRIANGLE);
-  vcircle = ps2x.Analog(PSAB_CIRCLE);
-  vcross = ps2x.Analog(PSAB_CROSS);
-  vsquare = ps2x.Analog(PSAB_SQUARE);
-  if (vtriangle | vcircle | vcross | vsquare) {
-    Serial.print("A:");
-    Serial.print(vtriangle);
-    Serial.print("; x:");
-    Serial.print(vcross);
-    Serial.print("; o:");
-    Serial.print(vcircle);
-    Serial.print("; #");
-    Serial.println(vsquare);
+
+  vcross = ps2x.Analog(PSAB_CROSS);// | ps2x.Analog(PSAB_TRIANGLE);
+  lb = xb = yb = 0;
+  if (vcross > thresh_high) {
+    lb = 1;        
+  } else if (vcross > thresh_middle) {
+    xb = 1;
+  } else if (vcross > thresh_low) {
+    yb = 1;
   }
-#endif
-#if 0
+  
+  vcircle = ps2x.Analog(PSAB_CIRCLE); // | ps2x.Analog(PSAB_SQUARE);
+
+  Serial.print("; x:");
+  Serial.print(vcross);
+  Serial.print("; o:");
+  Serial.println(vcircle);
+
+
+  rb = ab = bb = 0;
+  if (vcircle > thresh_high) {
+    rb = 1;        
+  } else if (vcircle > thresh_middle) {
+    ab = 1;
+  } else if (vcircle > thresh_low) {
+    bb = 1;
+  }
+
   lx = ps2x.Analog(PSS_LX);
   ly = ps2x.Analog(PSS_LY);
   rx = ps2x.Analog(PSS_RX);
   ry = ps2x.Analog(PSS_RY);
-#endif
 
   WMExtension::set_button_data(left, right, up, down,
     ab, bb, xb, yb, 
