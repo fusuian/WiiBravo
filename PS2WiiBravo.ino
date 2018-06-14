@@ -99,11 +99,11 @@ void setup(){
 
 const int thresh_high = 80;
 const int thresh_middle = 40; 
-const int thresh_low = 5;
 
 
 byte vtriangle, vcircle, vcross, vsquare;
 byte ptriangle, pcircle, pcross, psquare;
+bool ftriangle = false, fcircle = false, fcross = false, fsquare = false;
 
 int up, down, left, right;
 int start, select, home;
@@ -146,39 +146,37 @@ void loop() {
 
   lx = ly = rx = ry = 0;
 
+  lb = xb = yb = 0;
   vcross = ps2x.Analog(PSAB_CROSS);// | ps2x.Analog(PSAB_TRIANGLE);
-  if (vcross) {
-    Serial.print(vcross);
-    Serial.print(",");
-  } else if (pcross) {
-    Serial.println("--------");
+  if (fcross == false && vcross > 0 && pcross > 0) {
+    if (vcross > thresh_high) {
+      lb = 1;
+    } else if (vcross > thresh_middle) {
+      xb = 1;
+    } else {
+      yb = 1;
+    }
+    fcross = true;
+  } else if (vcross == 0) {
+    fcross = false;
   }
   pcross = vcross;
-#if 0
-  lb = xb = yb = 0;
-  if (vcross > thresh_high) {
-    lb = 1;        
-  } else if (vcross > thresh_middle) {
-    xb = 1;
-  } else if (vcross > thresh_low) {
-    yb = 1;
-  }
-#endif
-  vcircle = ps2x.Analog(PSAB_CIRCLE); // | ps2x.Analog(PSAB_SQUARE);
-//  Serial.print("; x:");
-//  Serial.print(vcross);
-//  Serial.print("; o:");
-//  Serial.println(vcircle);
-
 
   rb = ab = bb = 0;
-  if (vcircle > thresh_high) {
-    rb = 1;        
-  } else if (vcircle > thresh_middle) {
-    ab = 1;
-  } else if (vcircle > thresh_low) {
-    bb = 1;
+  vcircle = ps2x.Analog(PSAB_CIRCLE);
+  if (fcircle == false && vcircle > 0 && pcircle > 0) {
+    if (vcircle > thresh_high) {
+      rb = 1;
+    } else if (vcircle > thresh_middle) {
+      ab = 1;
+    } else {
+      bb = 1;
+    }
+    fcircle = true;
+  } else if (vcircle == 0) {
+    fcircle = false;
   }
+  pcircle = vcircle;
 
   lx = ps2x.Analog(PSS_LX);
   ly = ps2x.Analog(PSS_LY);
