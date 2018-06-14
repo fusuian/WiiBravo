@@ -112,10 +112,6 @@ int lb, rb, zlb, zrb;
 int lx, ly, rx, ry;
 
 void loop() {
-//  Serial.print(F("type = "));
-//  Serial.print(type);
-//  Serial.print(F("; error = "));
-//  Serial.println(error);
   if(error == 1) //skip loop if no controller found
     return; 
     
@@ -133,11 +129,6 @@ void loop() {
   //   x      A
   // y   a  #   o
   //   b      x
-
-//  ab = ps2x.Button(PSB_CIRCLE);
-//  bb = ps2x.Button(PSB_CROSS);
-//  xb = ps2x.Button(PSB_TRIANGLE);
-//  yb = ps2x.Button(PSB_SQUARE);
 
   lb = ps2x.Button(PSB_L2);
   rb = ps2x.Button(PSB_R2);
@@ -191,5 +182,4 @@ void loop() {
     zlb, zrb, lb, rb);
 
   delay(14);  
-  //delay(100);
 }
