@@ -1,16 +1,19 @@
 #include <PS2X_lib.h>  //for v1.6
 #include "WMExtension.h"
 
+const int ps_ok_pin = 8;
+const int wii_ok_pin = 9;
+
 /******************************************************************
  * set pins connected to PS2 controller:
  *   - 1e column: original 
  *   - 2e colmun: Stef?
  * replace pin numbers by the ones you use
  ******************************************************************/
-#define PS2_DAT       6 // 13    
-#define PS2_CMD       7 // 11
-#define PS2_SEL       8 // 10
-#define PS2_CLK       9 //  12
+#define PS2_DAT       6
+#define PS2_CMD       5
+#define PS2_SEL       4
+#define PS2_CLK       3
 
 /******************************************************************
  * select modes of PS2 controller:
@@ -38,43 +41,60 @@ void setup(){
   Serial.begin(38400);
   while (Serial == false)
     ;
-  
-  delay(300);  //added delay to give wireless ps2 module some time to startup, before configuring it
 
-  error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);  
-  if (error == 0){
-    Serial.print("Found Controller, configured successful ");
-  } else if (error == 1) {
-    Serial.println("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips");
-  } else if (error == 2) {
-    Serial.println("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips");
-  } else if (error == 3) {
-    Serial.println("Controller refusing to enter Pressures mode, may not support it. ");
+  pinMode(ps_ok_pin, OUTPUT);
+  pinMode(wii_ok_pin, OUTPUT);
+  digitalWrite(ps_ok_pin, LOW);
+  digitalWrite(wii_ok_pin, LOW);
+  
+  delay(300);
+  error = 1;
+  while (error != 0) {
+    error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);  
+    if (error == 0){
+      Serial.println("Found Controller, configured successful ");
+      digitalWrite(ps_ok_pin, HIGH);
+    } else if (error == 1) {
+      Serial.println("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips");
+    } else if (error == 2) {
+      Serial.println("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips");
+    } else if (error == 3) {
+      Serial.println("Controller refusing to enter Pressures mode, may not support it. ");
+    }
+    delay(100);
   }
   Serial.print(F("error = "));
   Serial.println(error);
-  
+
   type = ps2x.readType(); 
   switch(type) {
   case 0:
-    Serial.print("Unknown Controller type found ");
+    Serial.println("Unknown Controller type found ");
     break;
   case 1:
-    Serial.print("DualShock Controller found ");
+    Serial.println("DualShock Controller found ");
     break;
   case 2:
-    Serial.print("GuitarHero Controller found ");
+    Serial.println("GuitarHero Controller found ");
     break;
 	case 3:
-    Serial.print("Wireless Sony DualShock Controller found ");
+    Serial.println("Wireless Sony DualShock Controller found ");
     break;
   }
 
   Serial.print(F("type = "));
   Serial.println(type);
+
+  while (ps2x.enablePressures() == false) {
+    digitalWrite(ps_ok_pin, LOW);
+    delay(250);
+    digitalWrite(ps_ok_pin, HIGH);
+    delay(250);    
+  }
   
   WMExtension::init();
   Serial.println(F("WM init"));
+  digitalWrite(wii_ok_pin, HIGH);
 }
 
 const int thresh_high = 80;
