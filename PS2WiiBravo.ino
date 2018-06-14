@@ -103,6 +103,7 @@ const int thresh_low = 5;
 
 
 byte vtriangle, vcircle, vcross, vsquare;
+byte ptriangle, pcircle, pcross, psquare;
 
 int up, down, left, right;
 int start, select, home;
@@ -111,10 +112,10 @@ int lb, rb, zlb, zrb;
 int lx, ly, rx, ry;
 
 void loop() {
-  Serial.print(F("type = "));
-  Serial.print(type);
-  Serial.print(F("; error = "));
-  Serial.println(error);
+//  Serial.print(F("type = "));
+//  Serial.print(type);
+//  Serial.print(F("; error = "));
+//  Serial.println(error);
   if(error == 1) //skip loop if no controller found
     return; 
     
@@ -146,6 +147,14 @@ void loop() {
   lx = ly = rx = ry = 0;
 
   vcross = ps2x.Analog(PSAB_CROSS);// | ps2x.Analog(PSAB_TRIANGLE);
+  if (vcross) {
+    Serial.print(vcross);
+    Serial.print(",");
+  } else if (pcross) {
+    Serial.println("--------");
+  }
+  pcross = vcross;
+#if 0
   lb = xb = yb = 0;
   if (vcross > thresh_high) {
     lb = 1;        
@@ -154,13 +163,12 @@ void loop() {
   } else if (vcross > thresh_low) {
     yb = 1;
   }
-  
+#endif
   vcircle = ps2x.Analog(PSAB_CIRCLE); // | ps2x.Analog(PSAB_SQUARE);
-
-  Serial.print("; x:");
-  Serial.print(vcross);
-  Serial.print("; o:");
-  Serial.println(vcircle);
+//  Serial.print("; x:");
+//  Serial.print(vcross);
+//  Serial.print("; o:");
+//  Serial.println(vcircle);
 
 
   rb = ab = bb = 0;
@@ -185,4 +193,5 @@ void loop() {
     zlb, zrb, lb, rb);
 
   delay(14);  
+  //delay(100);
 }
