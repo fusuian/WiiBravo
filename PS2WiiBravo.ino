@@ -36,6 +36,20 @@ int error = 0;
 byte type = 0;
 byte vibrate = 0;
 
+const int thresh_middle = 500; 
+const int thresh_high = 3000;
+
+
+int vtriangle, vcircle, vcross, vsquare;
+int ptriangle, pcircle, pcross, psquare;
+bool ftriangle = false, fcircle = false, fcross = false, fsquare = false;
+
+int up, down, left, right;
+int start, select, home;
+int ab, bb, xb, yb;
+int lb, rb, zlb, zrb;
+int lx, ly, rx, ry;
+
 void setup(){
 
   Serial.begin(57600);
@@ -99,19 +113,6 @@ void setup(){
   digitalWrite(wii_ok_pin, HIGH);
 }
 
-const int thresh_high = 80;
-const int thresh_middle = 40; 
-
-
-byte vtriangle, vcircle, vcross, vsquare;
-byte ptriangle, pcircle, pcross, psquare;
-bool ftriangle = false, fcircle = false, fcross = false, fsquare = false;
-
-int up, down, left, right;
-int start, select, home;
-int ab, bb, xb, yb;
-int lb, rb, zlb, zrb;
-int lx, ly, rx, ry;
 
 void loop() {
   if(error == 1) //skip loop if no controller found
@@ -142,6 +143,8 @@ void loop() {
   lb = xb = yb = 0;
   vcross = ps2x.Analog(PSAB_CROSS);// | ps2x.Analog(PSAB_TRIANGLE);
   if (fcross == false && vcross > 0 && pcross > 0) {
+    vcross *= vcross;
+    Serial.println(vcross);
     if (vcross > thresh_high) {
       lb = 1;
     } else if (vcross > thresh_middle) {
@@ -158,6 +161,7 @@ void loop() {
   rb = ab = bb = 0;
   vcircle = ps2x.Analog(PSAB_CIRCLE);
   if (fcircle == false && vcircle > 0 && pcircle > 0) {
+    vcircle *= vcircle;
     if (vcircle > thresh_high) {
       rb = 1;
     } else if (vcircle > thresh_middle) {
