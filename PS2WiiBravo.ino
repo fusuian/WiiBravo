@@ -1,8 +1,8 @@
 #include <PS2X_lib.h>  //for v1.6
 #include "WMExtension.h"
 
-const int ps_ok_pin = 8;
-const int wii_ok_pin = 9;
+const int ps_ok_pin  = 6;
+const int wii_ok_pin = 7;
 
 /******************************************************************
  * set pins connected to PS2 controller:
@@ -10,10 +10,10 @@ const int wii_ok_pin = 9;
  *   - 2e colmun: Stef?
  * replace pin numbers by the ones you use
  ******************************************************************/
-#define PS2_DAT       6
-#define PS2_CMD       5
+#define PS2_DAT       2
+#define PS2_CMD       3
 #define PS2_SEL       4
-#define PS2_CLK       3
+#define PS2_CLK       5
 
 /******************************************************************
  * select modes of PS2 controller:
@@ -38,7 +38,7 @@ byte vibrate = 0;
 
 void setup(){
 
-  Serial.begin(38400);
+  Serial.begin(57600);
   while (Serial == false)
     ;
 
