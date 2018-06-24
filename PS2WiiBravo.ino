@@ -37,7 +37,7 @@ byte type = 0;
 byte vibrate = 0;
 
 const int thresh_middle = 500; 
-const int thresh_high = 3000;
+const int thresh_high = 1500;
 
 
 int vtriangle, vcircle, vcross, vsquare;
