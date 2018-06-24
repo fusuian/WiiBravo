@@ -133,10 +133,10 @@ void loop() {
   // y   a  #   o
   //   b      x
 
-  lb = ps2x.Button(PSB_L2);
-  rb = ps2x.Button(PSB_R2);
-  zlb = ps2x.Button(PSB_L1);
-  zrb = ps2x.Button(PSB_R1);
+  lb = ps2x.Button(PSB_L1);
+  rb = ps2x.Button(PSB_R1);
+  zlb = ps2x.Button(PSB_L2);
+  zrb = ps2x.Button(PSB_R2);
 
   lx = ly = rx = ry = 0;
 
