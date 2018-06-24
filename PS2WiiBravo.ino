@@ -36,8 +36,8 @@ int error = 0;
 byte type = 0;
 byte vibrate = 0;
 
-const int thresh_middle = 500; 
-const int thresh_high = 1500;
+const int thresh_middle =  800;
+const int thresh_high   = 1800;
 
 
 int vtriangle, vcircle, vcross, vsquare;
@@ -147,13 +147,13 @@ void loop() {
     Serial.print("#: ");
     Serial.print(vsquare);
     if (vsquare > thresh_high) {
-      Serial.println(": strong!");
+//      Serial.println(": strong!");
       lb = 1;
     } else if (vsquare > thresh_middle) {
-      Serial.println(": middle.");
+//      Serial.println(": middle.");
       xb = 1;
     } else {
-      Serial.println(": weak..");
+//      Serial.println(": weak..");
       yb = 1;
     }
     fsquare = true;
@@ -169,13 +169,13 @@ void loop() {
     Serial.print("x: ");
     Serial.print(vcross);
     if (vcross > thresh_high) {
-      Serial.println(": strong!");
+//      Serial.println(": strong!");
       rb = 1;
     } else if (vcross > thresh_middle) {
-      Serial.println(": middle.");
+//      Serial.println(": middle.");
       ab = 1;
     } else {
-      Serial.println(": weak..");
+//      Serial.println(": weak..");
       bb = 1;
     }
     fcross = true;
