@@ -141,39 +141,48 @@ void loop() {
   lx = ly = rx = ry = 0;
 
   lb = xb = yb = 0;
-  vcross = ps2x.Analog(PSAB_CROSS);// | ps2x.Analog(PSAB_TRIANGLE);
-  if (fcross == false && vcross > 0 && pcross > 0) {
-    vcross *= vcross;
-    Serial.println(vcross);
-    if (vcross > thresh_high) {
+  vsquare = ps2x.Analog(PSAB_SQUARE);// | ps2x.Analog(PSAB_TRIANGLE);
+  if (fsquare == false && vsquare > 0 && psquare > 0) {
+    vsquare *= vsquare;
+    Serial.print("#: ");
+    Serial.print(vsquare);
+    if (vsquare > thresh_high) {
+      Serial.println(": strong!");
       lb = 1;
-    } else if (vcross > thresh_middle) {
+    } else if (vsquare > thresh_middle) {
+      Serial.println(": middle.");
       xb = 1;
     } else {
+      Serial.println(": weak..");
       yb = 1;
+    }
+    fsquare = true;
+  } else if (vsquare == 0) {
+    fsquare = false;
+  }
+  psquare = vsquare;
+
+  rb = ab = bb = 0;
+  vcross = ps2x.Analog(PSAB_CROSS);
+  if (fcross == false && vcross > 0 && pcross > 0) {
+    vcross *= vcross;
+    Serial.print("x: ");
+    Serial.print(vcross);
+    if (vcross > thresh_high) {
+      Serial.println(": strong!");
+      rb = 1;
+    } else if (vcross > thresh_middle) {
+      Serial.println(": middle.");
+      ab = 1;
+    } else {
+      Serial.println(": weak..");
+      bb = 1;
     }
     fcross = true;
   } else if (vcross == 0) {
     fcross = false;
   }
   pcross = vcross;
-
-  rb = ab = bb = 0;
-  vcircle = ps2x.Analog(PSAB_CIRCLE);
-  if (fcircle == false && vcircle > 0 && pcircle > 0) {
-    vcircle *= vcircle;
-    if (vcircle > thresh_high) {
-      rb = 1;
-    } else if (vcircle > thresh_middle) {
-      ab = 1;
-    } else {
-      bb = 1;
-    }
-    fcircle = true;
-  } else if (vcircle == 0) {
-    fcircle = false;
-  }
-  pcircle = vcircle;
 
   lx = ps2x.Analog(PSS_LX);
   ly = ps2x.Analog(PSS_LY);
