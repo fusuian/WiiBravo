@@ -133,6 +133,9 @@ void loop() {
   // y   a  #   o
   //   b      x
 
+  xb = ps2x.Button(PSB_TRIANGLE);
+  ab = ps2x.Button(PSB_CIRCLE);
+  
   lb = ps2x.Button(PSB_L1);
   rb = ps2x.Button(PSB_R1);
   zlb = ps2x.Button(PSB_L2);
@@ -140,8 +143,8 @@ void loop() {
 
   lx = ly = rx = ry = 0;
 
-  lb = xb = yb = 0;
-  vsquare = ps2x.Analog(PSAB_SQUARE);// | ps2x.Analog(PSAB_TRIANGLE);
+  lb = yb = 0;
+  vsquare = ps2x.Analog(PSAB_SQUARE);
   if (fsquare == false && vsquare > 0 && psquare > 0) {
     vsquare *= vsquare;
     Serial.print("#: ");
