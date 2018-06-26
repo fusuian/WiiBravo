@@ -1,5 +1,12 @@
 #include <PS2X_lib.h>  //for v1.6
 #include "WMExtension.h"
+#include "BravoButton.h"
+
+const int thresh_middle =  800;
+const int thresh_high   = 1800;
+
+BravoButton attack_button(PSAB_SQUARE, thresh_middle, thresh_high);
+BravoButton   jump_button(PSAB_CROSS,  thresh_middle, thresh_high);
 
 const int ps_ok_pin  = 6;
 const int wii_ok_pin = 7;
@@ -36,13 +43,8 @@ int error = 0;
 byte type = 0;
 byte vibrate = 0;
 
-const int thresh_middle =  800;
-const int thresh_high   = 1800;
 
 
-int vtriangle, vcircle, vcross, vsquare;
-int ptriangle, pcircle, pcross, psquare;
-bool ftriangle = false, fcircle = false, fcross = false, fsquare = false;
 
 int up, down, left, right;
 int start, select, home;
@@ -52,7 +54,7 @@ int lx, ly, rx, ry;
 
 void setup(){
 
-  Serial.begin(57600);
+  Serial.begin(38400);
   while (Serial == false)
     ;
 
@@ -143,49 +145,13 @@ void loop() {
 
   lx = ly = rx = ry = 0;
 
-  lb = yb = 0;
-  vsquare = ps2x.Analog(PSAB_SQUARE);
-  if (fsquare == false && vsquare > 0 && psquare > 0) {
-    vsquare *= vsquare;
-    Serial.print("#: ");
-    Serial.print(vsquare);
-    if (vsquare > thresh_high) {
-//      Serial.println(": strong!");
-      lb = 1;
-    } else if (vsquare > thresh_middle) {
-//      Serial.println(": middle.");
-      xb = 1;
-    } else {
-//      Serial.println(": weak..");
-      yb = 1;
-    }
-    fsquare = true;
-  } else if (vsquare == 0) {
-    fsquare = false;
-  }
-  psquare = vsquare;
+  yb = 0;
+  int vsquare = ps2x.Analog(PSAB_SQUARE);
+  attack_button.update(vsquare, yb, xb, lb);
 
-  rb = ab = bb = 0;
-  vcross = ps2x.Analog(PSAB_CROSS);
-  if (fcross == false && vcross > 0 && pcross > 0) {
-    vcross *= vcross;
-    Serial.print("x: ");
-    Serial.print(vcross);
-    if (vcross > thresh_high) {
-//      Serial.println(": strong!");
-      rb = 1;
-    } else if (vcross > thresh_middle) {
-//      Serial.println(": middle.");
-      ab = 1;
-    } else {
-//      Serial.println(": weak..");
-      bb = 1;
-    }
-    fcross = true;
-  } else if (vcross == 0) {
-    fcross = false;
-  }
-  pcross = vcross;
+  bb = 0;
+  int vcross = ps2x.Analog(PSAB_CROSS);
+  jump_button.update(vcross, bb, ab, rb);
 
   // クラコンの左アナログスティックは6bit値、y軸は±逆転
   lx = ps2x.Analog(PSS_LX)  >> 2;
