@@ -135,7 +135,7 @@ void loop() {
 
   xb = ps2x.Button(PSB_TRIANGLE);
   ab = ps2x.Button(PSB_CIRCLE);
-  
+
   lb = ps2x.Button(PSB_L1);
   rb = ps2x.Button(PSB_R1);
   zlb = ps2x.Button(PSB_L2);
@@ -187,10 +187,12 @@ void loop() {
   }
   pcross = vcross;
 
-  lx = ps2x.Analog(PSS_LX);
-  ly = ps2x.Analog(PSS_LY);
-  rx = ps2x.Analog(PSS_RX);
-  ry = ps2x.Analog(PSS_RY);
+  // クラコンの左アナログスティックは6bit値、y軸は±逆転
+  lx = ps2x.Analog(PSS_LX)  >> 2;
+  ly = -ps2x.Analog(PSS_LY) >> 2;
+  // クラコンの右アナログスティックは5bit値、y軸は±逆転
+  rx = ps2x.Analog(PSS_RX)  >> 3;
+  ry = -ps2x.Analog(PSS_RY) >> 3;
 
   WMExtension::set_button_data(left, right, up, down,
     ab, bb, xb, yb,
