@@ -69,14 +69,14 @@ void setup(){
     digitalWrite(ps_ok_pin, LOW);
     error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
     if (error == 0){
-      Serial.println("Found Controller, configured successful ");
+      Serial.println(F("Found Controller, configured successful"));
       digitalWrite(ps_ok_pin, HIGH);
     } else if (error == 1) {
-      Serial.println("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips");
+      Serial.println(F("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips"));
     } else if (error == 2) {
-      Serial.println("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips");
+      Serial.println(F("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips"));
     } else if (error == 3) {
-      Serial.println("Controller refusing to enter Pressures mode, may not support it. ");
+      Serial.println(F("Controller refusing to enter Pressures mode, may not support it."));
     }
     digitalWrite(ps_ok_pin, HIGH);
     delay(100);
@@ -87,16 +87,16 @@ void setup(){
   type = ps2x.readType();
   switch(type) {
   case 0:
-    Serial.println("Unknown Controller type found ");
+    Serial.println(F("Unknown Controller type found"));
     break;
   case 1:
-    Serial.println("DualShock Controller found ");
+    Serial.println(F("DualShock Controller found"));
     break;
   case 2:
-    Serial.println("GuitarHero Controller found ");
+    Serial.println(F("GuitarHero Controller found"));
     break;
 	case 3:
-    Serial.println("Wireless Sony DualShock Controller found ");
+    Serial.println(F("Wireless Sony DualShock Controller found"));
     break;
   }
 
