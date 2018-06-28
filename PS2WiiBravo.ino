@@ -158,11 +158,11 @@ void loop() {
   jump_button.update(vcross, bb, ab, rb);
 
   // クラコンの左アナログスティックは6bit値、y軸は±逆転
-  lx = ps2x.Analog(PSS_LX)  >> 2;
-  ly = -ps2x.Analog(PSS_LY) >> 2;
+  lx =  ps2x.Analog(PSS_LX);
+  ly =  255 - ps2x.Analog(PSS_LY);
   // クラコンの右アナログスティックは5bit値、y軸は±逆転
-  rx = ps2x.Analog(PSS_RX)  >> 3;
-  ry = -ps2x.Analog(PSS_RY) >> 3;
+  rx =  ps2x.Analog(PSS_RX);
+  ry = 255 - ps2x.Analog(PSS_RY);
 
   WMExtension::set_button_data(left, right, up, down,
     ab, bb, xb, yb,
