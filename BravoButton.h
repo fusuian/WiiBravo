@@ -16,8 +16,8 @@ public:
     {
       if (fsquare == false && vsquare > 0 && psquare > 0) {
         vsquare *= vsquare;
-        Serial.print("#: ");
-        Serial.print(vsquare);
+//        Serial.print("#: ");
+//        Serial.print(vsquare);
         if (vsquare > thresh_high) {
     //      Serial.println(": strong!");
           lb = 1;
