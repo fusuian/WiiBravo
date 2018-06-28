@@ -157,10 +157,10 @@ void loop() {
   int vcross = ps2x.Analog(PSAB_CROSS);
   jump_button.update(vcross, bb, ab, rb);
 
-  // クラコンの左アナログスティックは6bit値、y軸は±逆転
+  // クラコンの左アナログスティックは6bit値(ライブラリで変換)、y軸を反転
   lx =  ps2x.Analog(PSS_LX);
   ly =  255 - ps2x.Analog(PSS_LY);
-  // クラコンの右アナログスティックは5bit値、y軸は±逆転
+  // クラコンの右アナログスティックは5bit値(ライブラリで変換)、y軸を反転
   rx =  ps2x.Analog(PSS_RX);
   ry = 255 - ps2x.Analog(PSS_RY);
 
