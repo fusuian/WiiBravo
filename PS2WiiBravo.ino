@@ -14,6 +14,7 @@ BravoButton   jump_button(thresh_middle, thresh_high);
 
 const int ps_ok_pin  = 6;
 const int wii_ok_pin = 7;
+const int red_pin = 7;
 
 #define PS2_DAT       2
 #define PS2_CMD       3
@@ -37,6 +38,17 @@ int lx, ly, rx, ry;
 
 byte clx, cly, crx, cry;
 
+void stop_by_error()
+{
+  while (true) {
+    digitalWrite(red_pin, HIGH);
+    delay(100);
+    digitalWrite(red_pin, LOW);
+    delay(900);
+  }
+}
+
+
 void setup(){
 
   Serial.begin(57600);
@@ -48,26 +60,23 @@ void setup(){
   digitalWrite(ps_ok_pin, LOW);
   digitalWrite(wii_ok_pin, LOW);
 
-  delay(300);
-  digitalWrite(ps_ok_pin, HIGH);
-  delay(100);
   error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
+  Serial.print(F("error = "));
+  Serial.println(error);
   if (error == 0){
     Serial.println(F("Found Controller, configured successful"));
   } else if (error == 1) {
-    Serial.println(F("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips"));
+    Serial.println(F("No controller found"));
+    stop_by_error();
   } else if (error == 2) {
-    Serial.println(F("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips"));
+    Serial.println(F("Controller found but not accepting commands"));
   } else if (error == 3) {
-    Serial.println(F("Controller refusing to enter Pressures mode, may not support it."));
+    Serial.println(F("Controller refusing to enter Pressures mode"));
   }
-  digitalWrite(ps_ok_pin, LOW);
-  delay(100);
-
-  Serial.print(F("error = "));
-  Serial.println(error);
 
   type = ps2x.readType();
+  Serial.print(F("type = "));
+  Serial.println(type);
   switch(type) {
   case 0:
     Serial.println(F("Digital Controller found"));
@@ -79,18 +88,13 @@ void setup(){
     break;
   default:
     Serial.println(F("Unknown Controller found"));
+    stop_by_error();
     break;
   }
 
-  Serial.print(F("type = "));
-  Serial.println(type);
-
   if (bravo_mode) {
     while (ps2x.enablePressures() == false) {
-      digitalWrite(ps_ok_pin, LOW);
-      delay(50);
-      digitalWrite(ps_ok_pin, HIGH);
-      delay(50);
+      delay(16);
     }
   }
 
