@@ -9,9 +9,8 @@ const int middle_pin = 6;
 class BravoButton
 {
 public:
-    BravoButton(int button, int thresh_middle, int thresh_high) : fsquare(false)
+    BravoButton(int thresh_middle, int thresh_high) : fsquare(false)
     {
-        this->button = button;
         this->thresh_middle = thresh_middle;
         this->thresh_high = thresh_high;
     }
@@ -49,7 +48,6 @@ public:
     }
 
 private:
-    int button;
     int thresh_middle;
     int thresh_high;
 

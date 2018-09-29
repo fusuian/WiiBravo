@@ -9,8 +9,8 @@ const int thresh_high   = 1800;
 bool bravo_mode = false;
 bool digital_mode = false;
 
-BravoButton attack_button(PSAB_SQUARE, thresh_middle, thresh_high);
-BravoButton   jump_button(PSAB_CROSS,  thresh_middle, thresh_high);
+BravoButton attack_button(thresh_middle, thresh_high);
+BravoButton   jump_button(thresh_middle, thresh_high);
 
 const int ps_ok_pin  = 6;
 const int wii_ok_pin = 7;
