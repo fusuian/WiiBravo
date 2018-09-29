@@ -96,10 +96,25 @@ void setup(){
   digitalWrite(wii_ok_pin, HIGH);
 }
 
-int m;
+int m = 0;
 
 void loop() {
+// 1/60秒単位のウェイトをより正確に
+void delay16()
+{
+  int n = micros();
+  if (n >= m) {
+    n -= m;
+  } else {
+    n += ULONG_MAX - m;
+  }
+  delayMicroseconds(10000 - n);
+  delayMicroseconds(6666);
   m = micros();
+}
+
+
+
   if(error == 1) //skip loop if no controller found
     return;
 
@@ -150,13 +165,5 @@ void loop() {
     lx, ly, rx, ry,
     zlb, zrb, lb, rb);
 
-  // 1/60秒単位のループをより正確に
-  int n = micros();
-  if (n >= m) {
-    n -= m;
-  } else {
-    n += ULONG_MAX - m;
-  }
-  delayMicroseconds(10000 - n);
-  delayMicroseconds(6666);
+  delay16();
 }
