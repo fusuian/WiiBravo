@@ -11,6 +11,8 @@ bool digital_mode = false;
 
 BravoButton attack_button(thresh_middle, thresh_high);
 BravoButton   jump_button(thresh_middle, thresh_high);
+BravoButton attack_button2(thresh_middle, thresh_high);
+BravoButton   jump_button2(thresh_middle, thresh_high);
 
 const int ps_ok_pin  = 6;
 const int wii_ok_pin = 7;
@@ -147,12 +149,14 @@ void loop() {
   zrb = ps2x.Button(PSB_R2);
 
   if (bravo_mode) {
-    yb = xb = lb = 0;
-    bb = ab = rb = 0;
-    int vcross = ps2x.Analog(PSAB_CIRCLE);
-    jump_button.update(vcross, bb, ab, rb);
-    int vsquare = ps2x.Analog(PSAB_CROSS);
-    attack_button.update(vsquare, yb, xb, lb);
+    int vcircle = ps2x.Analog(PSAB_CIRCLE);
+    jump_button.update(vcircle, bb, ab, rb);
+    int vsquare = ps2x.Analog(PSAB_SQUARE);
+    jump_button2.update(vsquare, bb, ab, rb);
+    int vcross = ps2x.Analog(PSAB_CROSS);
+    attack_button.update(vcross, yb, xb, lb);
+    int vtriangle = ps2x.Analog(PSAB_TRIANGLE);
+    attack_button2.update(vtriangle, yb, xb, lb);
   } else {
     xb = ps2x.Button(PSB_TRIANGLE);
     ab = ps2x.Button(PSB_CIRCLE);
