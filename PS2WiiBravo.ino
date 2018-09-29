@@ -104,15 +104,14 @@ void setup(){
   cly = WMExtension::get_calibration_byte(5);
   crx = WMExtension::get_calibration_byte(8);
   cry = WMExtension::get_calibration_byte(11);
-
 }
-
-int m = 0;
 
 // 1/60秒単位のウェイトをより正確に
 void delay16()
 {
+  static int m = 0;
   int n = micros();
+  
   if (n >= m) {
     n -= m;
   } else {
