@@ -6,6 +6,8 @@
 
 const int thresh_middle =  800;
 const int thresh_high   = 1800;
+bool bravo_mode = false;
+bool digital_mode = false;
 
 BravoButton attack_button(PSAB_SQUARE, thresh_middle, thresh_high);
 BravoButton   jump_button(PSAB_CROSS,  thresh_middle, thresh_high);
@@ -33,9 +35,11 @@ int ab, bb, xb, yb;
 int lb, rb, zlb, zrb;
 int lx, ly, rx, ry;
 
+byte clx, cly, crx, cry;
+
 void setup(){
 
-  Serial.begin(38400);
+  Serial.begin(57600);
   while (Serial == false)
     ;
 
@@ -45,60 +49,62 @@ void setup(){
   digitalWrite(wii_ok_pin, LOW);
 
   delay(300);
-  error = 1;
-  while (error != 0) {
-    digitalWrite(ps_ok_pin, LOW);
-    error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
-    if (error == 0){
-      Serial.println(F("Found Controller, configured successful"));
-      digitalWrite(ps_ok_pin, HIGH);
-    } else if (error == 1) {
-      Serial.println(F("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips"));
-    } else if (error == 2) {
-      Serial.println(F("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips"));
-    } else if (error == 3) {
-      Serial.println(F("Controller refusing to enter Pressures mode, may not support it."));
-    }
-    digitalWrite(ps_ok_pin, HIGH);
-    delay(100);
+  digitalWrite(ps_ok_pin, HIGH);
+  delay(100);
+  error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
+  if (error == 0){
+    Serial.println(F("Found Controller, configured successful"));
+  } else if (error == 1) {
+    Serial.println(F("No controller found, check wiring, see readme.txt to enable debug. visit www.billporter.info for troubleshooting tips"));
+  } else if (error == 2) {
+    Serial.println(F("Controller found but not accepting commands. see readme.txt to enable debug. Visit www.billporter.info for troubleshooting tips"));
+  } else if (error == 3) {
+    Serial.println(F("Controller refusing to enter Pressures mode, may not support it."));
   }
+  digitalWrite(ps_ok_pin, LOW);
+  delay(100);
+
   Serial.print(F("error = "));
   Serial.println(error);
 
   type = ps2x.readType();
   switch(type) {
   case 0:
-    Serial.println(F("Unknown Controller type found"));
+    Serial.println(F("Digital Controller found"));
+    digital_mode = true;
     break;
   case 1:
     Serial.println(F("DualShock Controller found"));
+    bravo_mode = true;
     break;
-  case 2:
-    Serial.println(F("GuitarHero Controller found"));
-    break;
-	case 3:
-    Serial.println(F("Wireless Sony DualShock Controller found"));
+  default:
+    Serial.println(F("Unknown Controller found"));
     break;
   }
 
   Serial.print(F("type = "));
   Serial.println(type);
 
-  while (ps2x.enablePressures() == false) {
-    digitalWrite(ps_ok_pin, LOW);
-    delay(250);
-    digitalWrite(ps_ok_pin, HIGH);
-    delay(250);
+  if (bravo_mode) {
+    while (ps2x.enablePressures() == false) {
+      digitalWrite(ps_ok_pin, LOW);
+      delay(50);
+      digitalWrite(ps_ok_pin, HIGH);
+      delay(50);
+    }
   }
 
   WMExtension::init();
   Serial.println(F("WM init"));
-  digitalWrite(wii_ok_pin, HIGH);
+  clx = WMExtension::get_calibration_byte(2);
+  cly = WMExtension::get_calibration_byte(5);
+  crx = WMExtension::get_calibration_byte(8);
+  cry = WMExtension::get_calibration_byte(11);
+
 }
 
 int m = 0;
 
-void loop() {
 // 1/60秒単位のウェイトをより正確に
 void delay16()
 {
@@ -115,6 +121,7 @@ void delay16()
 
 
 
+void loop() {
   if(error == 1) //skip loop if no controller found
     return;
 
@@ -133,31 +140,44 @@ void delay16()
   // y   a  #   o
   //   b      x
 
-  xb = ps2x.Button(PSB_TRIANGLE);
-  ab = ps2x.Button(PSB_CIRCLE);
-
-  lb = ps2x.Button(PSB_L1);
-  rb = ps2x.Button(PSB_R1);
   zlb = ps2x.Button(PSB_L2);
   zrb = ps2x.Button(PSB_R2);
 
-  lx = ly = rx = ry = 0;
+  if (bravo_mode) {
+    yb = xb = lb = 0;
+    bb = ab = rb = 0;
+    int vcross = ps2x.Analog(PSAB_CIRCLE);
+    jump_button.update(vcross, bb, ab, rb);
+    int vsquare = ps2x.Analog(PSAB_CROSS);
+    attack_button.update(vsquare, yb, xb, lb);
+  } else {
+    xb = ps2x.Button(PSB_TRIANGLE);
+    ab = ps2x.Button(PSB_CIRCLE);
+    yb = ps2x.Button(PSB_SQUARE);
+    bb = ps2x.Button(PSB_CROSS);
+    lb = ps2x.Button(PSB_L1);
+    rb = ps2x.Button(PSB_R1);
+  }
 
-  yb = 0;
-  int vsquare = ps2x.Analog(PSAB_SQUARE);
-  attack_button.update(vsquare, yb, xb, lb);
-
-  bb = 0;
-  int vcross = ps2x.Analog(PSAB_CROSS);
-  jump_button.update(vcross, bb, ab, rb);
-
-  // クラコンの左アナログスティックは6bit値(ライブラリで変換)、y軸を反転
-  lx =  ps2x.Analog(PSS_LX);
-  ly =  255 - ps2x.Analog(PSS_LY);
-  // クラコンの右アナログスティックは5bit値(ライブラリで変換)、y軸を反転
-  rx =  ps2x.Analog(PSS_RX);
-  ry = 255 - ps2x.Analog(PSS_RY);
-
+  if (digital_mode) {
+    lx = crx;
+    ly = cry;
+    rx = crx;
+    ry = cry;  
+  } else {
+    // クラコンの左アナログスティックは6bit値(ライブラリ側で変換)、y軸を反転
+    lx =  ps2x.Analog(PSS_LX);
+    if (abs(lx) < 16) { lx = 0; }
+    ly =  255 - ps2x.Analog(PSS_LY);
+    if (abs(ly) < 16) { ly = 0; }
+    
+    // クラコンの右アナログスティックは5bit値(ライブラリ側で変換)、y軸を反転
+    rx =  ps2x.Analog(PSS_RX);
+    if (abs(rx) < 16) { rx = 0; }
+    ry = 255 - ps2x.Analog(PSS_RY);
+    if (abs(ry) < 16) { ry = 0; }
+  }
+    
   WMExtension::set_button_data(left, right, up, down,
     ab, bb, xb, yb,
     lb, rb,
