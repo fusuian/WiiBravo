@@ -4,10 +4,11 @@
 
 #define ULONG_MAX (4294967295)
 
-const int thresh_middle =  800;
-const int thresh_high   = 1800;
 bool bravo_mode = false;
 bool digital_mode = false;
+
+const int thresh_middle =  100; //800;
+const int thresh_high   =  1200; //1800;
 
 BravoButton attack_button(thresh_middle, thresh_high);
 BravoButton   jump_button(thresh_middle, thresh_high);
