@@ -13,40 +13,19 @@ BravoButton   jump_button(PSAB_CROSS,  thresh_middle, thresh_high);
 const int ps_ok_pin  = 6;
 const int wii_ok_pin = 7;
 
-/******************************************************************
- * set pins connected to PS2 controller:
- *   - 1e column: original
- *   - 2e colmun: Stef?
- * replace pin numbers by the ones you use
- ******************************************************************/
 #define PS2_DAT       2
 #define PS2_CMD       3
 #define PS2_SEL       4
 #define PS2_CLK       5
 
-/******************************************************************
- * select modes of PS2 controller:
- *   - pressures = analog reading of push-butttons
- *   - rumble    = motor rumbling
- * uncomment 1 of the lines for each mode selection
- ******************************************************************/
 #define pressures   true
-//#define pressures   false
-//#define rumble      true
 #define rumble      false
 
-PS2X ps2x; // create PS2 Controller Class
-
-//right now, the library does NOT support hot pluggable controllers, meaning
-//you must always either restart your Arduino after you connect the controller,
-//or call config_gamepad(pins) again after connecting the controller.
+PS2X ps2x;
 
 int error = 0;
 byte type = 0;
 byte vibrate = 0;
-
-
-
 
 int up, down, left, right;
 int start, select, home;
