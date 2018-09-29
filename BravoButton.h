@@ -18,6 +18,7 @@ public:
 
     void update(int vsquare, int &yb, int &xb, int &lb)
     {
+      yb = xb = lb = 0;
       if (fsquare == false && vsquare > 0 && psquare > 0) {
         vsquare *= vsquare;
 //        Serial.print("#: ");
