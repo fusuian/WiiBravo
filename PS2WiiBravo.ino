@@ -15,7 +15,7 @@
 //                  L2 # A L1 : ZL X Y L
 //                  R2 x o R1 : ZR B A R
 
-bool bravo_mode = false;
+bool bravo_mode = false;    
 bool digital_mode = false;
 
 const int thresh_middle =  100; //800;
@@ -31,6 +31,7 @@ const byte ps_ok_pin  = 6;
 const byte wii_ok_pin = 7;
 const byte red_pin = 7;
 
+// PlayStation コントローラ読み取りピン
 #define PS2_DAT       2
 #define PS2_CMD       3
 #define PS2_SEL       4
@@ -54,6 +55,7 @@ byte lx, ly, rx, ry;   // アナログスティックL/R
 
 byte clx, cly, crx, cry;  // アナログスティックの中央値
 
+// エラーが発生したら赤LEDをチカチカさせる
 void stop_by_error()
 {
   while (true) {
@@ -65,8 +67,8 @@ void stop_by_error()
 }
 
 
-void setup(){
-
+void setup()
+{
   Serial.begin(57600);
   while (Serial == false)
     ;
@@ -76,6 +78,7 @@ void setup(){
   digitalWrite(ps_ok_pin, LOW);
   digitalWrite(wii_ok_pin, LOW);
 
+  // PSコントローラ初期化
   error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
   Serial.print(F("error = "));
   Serial.println(error);
@@ -90,6 +93,7 @@ void setup(){
     Serial.println(F("Controller refusing to enter Pressures mode"));
   }
 
+  // DualShock2であればベラボーマンモード、PS1コントローラであればデジタルモード
   type = ps2x.readType();
   Serial.print(F("type = "));
   Serial.println(type);
@@ -114,6 +118,7 @@ void setup(){
     }
   }
 
+  // Wiiリモコン初期化
   WMExtension::init();
   Serial.println(F("WM init"));
   clx = WMExtension::get_calibration_byte(2);
@@ -140,7 +145,8 @@ void delay16()
 
 
 
-void loop() {
+void loop() 
+{
   ps2x.read_gamepad(false, vibrate);
   up    = ps2x.Button(PSB_PAD_UP);
   down  = ps2x.Button(PSB_PAD_DOWN);
