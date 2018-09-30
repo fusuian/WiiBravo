@@ -114,8 +114,8 @@ void setup(){
 // 1/60秒単位のウェイトをより正確に
 void delay16()
 {
-  static int m = 0;
-  int n = micros();
+  static unsigned long m = 0;
+  unsigned long n = micros();
   
   if (n >= m) {
     n -= m;
