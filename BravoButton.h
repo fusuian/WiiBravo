@@ -16,7 +16,7 @@ public:
     }
 
 
-    void update(int vsquare, int &yb, int &xb, int &lb)
+    void update(byte vsquare, byte &yb, byte &xb, byte &lb)
     {
       yb = xb = lb = 0;
       if (fsquare == false && vsquare > 0 && psquare > 0) {

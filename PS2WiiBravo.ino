@@ -15,9 +15,10 @@ BravoButton   jump_button(thresh_middle, thresh_high);
 BravoButton attack_button2(thresh_middle, thresh_high);
 BravoButton   jump_button2(thresh_middle, thresh_high);
 
-const int ps_ok_pin  = 6;
-const int wii_ok_pin = 7;
-const int red_pin = 7;
+// インジケータLEDピン
+const byte ps_ok_pin  = 6;
+const byte wii_ok_pin = 7;
+const byte red_pin = 7;
 
 #define PS2_DAT       2
 #define PS2_CMD       3
@@ -33,13 +34,14 @@ int error = 0;
 byte type = 0;
 byte vibrate = 0;
 
-int up, down, left, right;
-int start, select, home;
-int ab, bb, xb, yb;
-int lb, rb, zlb, zrb;
-int lx, ly, rx, ry;
+// Wiiリモコンへ送る各ボタンのフラグ
+byte up, down, left, right;
+byte start, select, home;
+byte ab, bb, xb, yb;   // A/B/X/Yボタン
+byte lb, rb, zlb, zrb; // L/R/ZL/ZRボタン
+byte lx, ly, rx, ry;   // アナログスティックL/R
 
-byte clx, cly, crx, cry;
+byte clx, cly, crx, cry;  // アナログスティックの中央値
 
 void stop_by_error()
 {
@@ -150,13 +152,13 @@ void loop() {
   zrb = ps2x.Button(PSB_R2);
 
   if (bravo_mode) {
-    int vcircle = ps2x.Analog(PSAB_CIRCLE);
+    byte vcircle = ps2x.Analog(PSAB_CIRCLE);
     jump_button.update(vcircle, bb, ab, rb);
-    int vsquare = ps2x.Analog(PSAB_SQUARE);
+    byte vsquare = ps2x.Analog(PSAB_SQUARE);
     jump_button2.update(vsquare, bb, ab, rb);
-    int vcross = ps2x.Analog(PSAB_CROSS);
+    byte vcross = ps2x.Analog(PSAB_CROSS);
     attack_button.update(vcross, yb, xb, lb);
-    int vtriangle = ps2x.Analog(PSAB_TRIANGLE);
+    byte vtriangle = ps2x.Analog(PSAB_TRIANGLE);
     attack_button2.update(vtriangle, yb, xb, lb);
   } else {
     xb = ps2x.Button(PSB_TRIANGLE);
