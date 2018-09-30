@@ -141,9 +141,6 @@ void delay16()
 
 
 void loop() {
-  if(error == 1) //skip loop if no controller found
-    return;
-
   ps2x.read_gamepad(false, vibrate);
   up    = ps2x.Button(PSB_PAD_UP);
   down  = ps2x.Button(PSB_PAD_DOWN);
