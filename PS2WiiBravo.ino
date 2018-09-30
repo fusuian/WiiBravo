@@ -4,6 +4,17 @@
 
 #define ULONG_MAX (4294967295)
 
+// 動作モードフラグ
+// ベラボーマンモード：DualShock2のボタンがそれぞれ、弱中強３段階の攻撃/ジャンプボタンになる。
+// デジタルモード: PS1コントローラのボタンをストII配列で割り当てる
+//                  R1 # A L1 : ZL X Y L
+//                  R2 x o L2 : ZR B A R
+
+#define MY_CUSTOM_CONTROLLER
+// 注: 作者のアケコンはボタンの配線を入れ替えているため、以下の配列に割り当てている
+//                  L2 # A L1 : ZL X Y L
+//                  R2 x o R1 : ZR B A R
+
 bool bravo_mode = false;
 bool digital_mode = false;
 
@@ -148,8 +159,13 @@ void loop() {
   // y   a  #   o
   //   b      x
 
+#ifdef MY_CUSTOM_CONTROLLER
   zlb = ps2x.Button(PSB_L2);
   zrb = ps2x.Button(PSB_R2);
+#else
+  zlb = ps2x.Button(PSB_L1);
+  zrb = ps2x.Button(PSB_L2);
+#endif
 
   if (bravo_mode) {
     byte vcircle = ps2x.Analog(PSAB_CIRCLE);
@@ -165,8 +181,13 @@ void loop() {
     ab = ps2x.Button(PSB_CIRCLE);
     yb = ps2x.Button(PSB_SQUARE);
     bb = ps2x.Button(PSB_CROSS);
+#ifdef MY_CUSTOM_CONTROLLER
     lb = ps2x.Button(PSB_L1);
     rb = ps2x.Button(PSB_R1);
+#else
+    lb = ps2x.Button(PSB_R1);
+    rb = ps2x.Button(PSB_R2);
+#endif
   }
 
   if (digital_mode) {
