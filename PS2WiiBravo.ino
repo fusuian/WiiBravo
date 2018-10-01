@@ -27,9 +27,12 @@ BravoButton attack_button2(thresh_middle, thresh_high);
 BravoButton   jump_button2(thresh_middle, thresh_high);
 
 // インジケータLEDピン
-const byte ps_ok_pin  = 6;
-const byte wii_ok_pin = 7;
-const byte red_pin = 7;
+const byte weak_pin = 6;
+const byte middle_pin = 7;
+const byte strong_pin = 8;
+const byte red_pin = 6;
+
+
 
 // PlayStation コントローラ読み取りピン
 #define PS2_DAT       2
@@ -73,10 +76,12 @@ void setup()
   while (Serial == false)
     ;
 
-  pinMode(ps_ok_pin, OUTPUT);
-  pinMode(wii_ok_pin, OUTPUT);
-  digitalWrite(ps_ok_pin, LOW);
-  digitalWrite(wii_ok_pin, LOW);
+  pinMode(weak_pin, OUTPUT);
+  pinMode(middle_pin, OUTPUT);
+  pinMode(strong_pin, OUTPUT);
+  portOff(weak_pin);
+  portOff(middle_pin);
+  portOff(strong_pin);
 
   // PSコントローラ初期化
   error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, pressures, rumble);
@@ -215,6 +220,22 @@ void loop()
   }
     
   WMExtension::set_button_data(left, right, up, down,
+  if (yb | bb) {
+    portOn(weak_pin);
+  } else {
+    portOff(weak_pin);
+  }
+  if (xb | ab) {
+    portOn(middle_pin);
+  } else {
+    portOff(middle_pin);
+  }
+  if (lb | rb) {
+    portOn(strong_pin);
+  } else {
+    portOff(strong_pin);
+  }
+
     ab, bb, xb, yb,
     lb, rb,
     select, start, home,
