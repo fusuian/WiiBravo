@@ -208,11 +208,6 @@ void loop()
   select = ps2x.Button(PSB_SELECT);
   home = up && select;
 
-  // buttons:
-  //   x      A
-  // y   a  #   o
-  //   b      x
-
 #ifdef MY_CUSTOM_CONTROLLER
   zlb = ps2x.Button(PSB_L2);
   zrb = ps2x.Button(PSB_R2);
