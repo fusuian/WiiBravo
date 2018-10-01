@@ -9,6 +9,7 @@
 // デジタルモード: PS1コントローラのボタンをストII配列で割り当てる
 //                  R1 # A L1 : ZL X Y L
 //                  R2 x o L2 : ZR B A R
+bool fc_mode = false;
 
 #define MY_CUSTOM_CONTROLLER
 // 注: 作者のアケコンはボタンの配線を入れ替えているため、以下の配列に割り当てている
@@ -186,6 +187,19 @@ void loop()
     attack_button.update(vcross, yb, xb, lb);
     byte vtriangle = ps2x.Analog(PSAB_TRIANGLE);
     attack_button2.update(vtriangle, yb, xb, lb);
+  } else if (fc_mode) {
+    // 上段: メガドラ用   Y B A : # A R1(L1)
+    // 下段: ファミコン用 X Y A : x o R2(R1)
+    xb = ps2x.Button(PSB_CROSS);
+    yb = ps2x.Button(PSB_SQUARE) | ps2x.Button(PSB_CIRCLE);
+    bb = ps2x.Button(PSB_TRIANGLE);
+    lb = ps2x.Button(PSB_L1);
+    rb = ps2x.Button(PSB_R1);
+#ifdef MY_CUSTOM_CONTROLLER
+    ab = ps2x.Button(PSB_L1) | ps2x.Button(PSB_R1);
+#else
+    ab = ps2x.Button(PSB_R1) | ps2x.Button(PSB_R2);
+#endif
   } else {
     xb = ps2x.Button(PSB_TRIANGLE);
     ab = ps2x.Button(PSB_CIRCLE);
@@ -205,6 +219,14 @@ void loop()
     ly = down? 0: (up? 255: cly);
     rx = crx;
     ry = cry;  
+
+    if (select & rb) {
+      fc_mode = true;
+    }
+    if (select & lb) {
+      fc_mode = false;
+    }
+
   } else {
     // クラコンの左アナログスティックは6bit値(ライブラリ側で変換)、y軸を反転
     lx =  ps2x.Analog(PSS_LX);
