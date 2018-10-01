@@ -11,12 +11,12 @@ public:
     }
 
 
-    void update(byte vsquare, byte &yb, byte &xb, byte &lb)
+    void update(int vsquare, byte &yb, byte &xb, byte &lb)
     {
       if (fsquare == false && vsquare > 0 && psquare > 0) {
-        vsquare *= vsquare;
 //        Serial.print("#: ");
 //        Serial.print(vsquare);
+        vsquare *= psquare;
         if (vsquare > thresh_high) {
 //          Serial.println(": strong!");
           lb = 1;
