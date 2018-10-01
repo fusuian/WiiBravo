@@ -201,8 +201,8 @@ void loop()
   }
 
   if (digital_mode) {
-    lx = crx;
-    ly = cry;
+    lx = left? 0 : (right? 255 : clx);
+    ly = down? 0: (up? 255: cly);
     rx = crx;
     ry = cry;  
   } else {
