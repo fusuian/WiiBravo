@@ -171,10 +171,12 @@ void loop()
 #endif
 
   if (bravo_mode) {
-    byte vcircle = ps2x.Analog(PSAB_CIRCLE);
-    jump_button.update(vcircle, bb, ab, rb);
+    yb = xb = lb = 0;
+    bb = ab = rb = 0;
     byte vsquare = ps2x.Analog(PSAB_SQUARE);
     jump_button2.update(vsquare, bb, ab, rb);
+    byte vcircle = ps2x.Analog(PSAB_CIRCLE);
+    jump_button.update(vcircle, bb, ab, rb);
     byte vcross = ps2x.Analog(PSAB_CROSS);
     attack_button.update(vcross, yb, xb, lb);
     byte vtriangle = ps2x.Analog(PSAB_TRIANGLE);
