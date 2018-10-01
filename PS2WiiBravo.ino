@@ -5,23 +5,30 @@
 
 #define ULONG_MAX (4294967295)
 
+
 // 動作モードフラグ
 // ベラボーマンモード：DualShock2のボタンがそれぞれ、弱中強３段階の攻撃/ジャンプボタンになる。
+bool bravo_mode = false;
+
 // デジタルモード: PS1コントローラのボタンをストII配列で割り当てる
 //                  R1 # A L1 : ZL X Y L
 //                  R2 x o L2 : ZR B A R
-bool fc_mode = false;
-
-#define MY_CUSTOM_CONTROLLER
-// 注: 作者のアケコンはボタンの配線を入れ替えているため、以下の配列に割り当てている
-//                  L2 # A L1 : ZL X Y L
-//                  R2 x o R1 : ZR B A R
-
-bool bravo_mode = false;    
 bool digital_mode = false;
 
+// ファミコンモード: PS1コントローラのボタンをVCのメガドライブ配列(上段)
+//                    ファミコン配列(下段)で割り当てる
+//                    select+Rでオン、select+Lでオフ
+//                    R1 # A L1 : ZL Y B A
+//                    R2 x o L2 : ZR X Y A
+bool fc_mode = false;
+
+// 注: 作者のアケコンはL2とR1ボタンの配線を入れ替えているため、
+//     MY_CUSTOM_CONTROLLERで以下の配列に割り当てている
+#define MY_CUSTOM_CONTROLLER
+
+
 const int thresh_middle =  100; //800;
-const int thresh_high   =  1200; //1800;
+const int thresh_high   =  1000; //1800;
 
 BravoButton attack_button(thresh_middle, thresh_high);
 BravoButton   jump_button(thresh_middle, thresh_high);
@@ -139,7 +146,7 @@ void delay16()
 {
   static unsigned long m = 0;
   unsigned long n = micros();
-  
+
   if (n >= m) {
     n -= m;
   } else {
@@ -155,7 +162,7 @@ byte blink_pin;
 byte blink_mode;
 const byte blink_frames = 5;
 
-void loop() 
+void loop()
 {
   if (blink_count > 0) {
       if (--blink_count % blink_frames == 0) {
@@ -237,7 +244,7 @@ void loop()
     lx = left? 0 : (right? 255 : clx);
     ly = down? 0: (up? 255: cly);
     rx = crx;
-    ry = cry;  
+    ry = cry;
 
     if (select & rb) {
       fc_mode = true;
@@ -258,14 +265,14 @@ void loop()
     if (abs(lx) < 16) { lx = 0; }
     ly =  255 - ps2x.Analog(PSS_LY);
     if (abs(ly) < 16) { ly = 0; }
-    
+
     // クラコンの右アナログスティックは5bit値(ライブラリ側で変換)、y軸を反転
     rx =  ps2x.Analog(PSS_RX);
     if (abs(rx) < 16) { rx = 0; }
     ry = 255 - ps2x.Analog(PSS_RY);
     if (abs(ry) < 16) { ry = 0; }
   }
-    
+
   WMExtension::set_button_data(left, right, up, down,
   if (yb | bb) {
     portOn(weak_pin);
