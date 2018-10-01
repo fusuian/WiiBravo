@@ -273,7 +273,6 @@ void loop()
     if (abs(ry) < 16) { ry = 0; }
   }
 
-  WMExtension::set_button_data(left, right, up, down,
   if (yb | bb) {
     portOn(weak_pin);
   } else {
@@ -290,6 +289,7 @@ void loop()
     portOff(strong_pin);
   }
 
+  WMExtension::set_button_data(left, right, up, down,
     ab, bb, xb, yb,
     lb, rb,
     select, start, home,
