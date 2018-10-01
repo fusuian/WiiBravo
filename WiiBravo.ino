@@ -1,4 +1,23 @@
-#include <PS2X_lib.h>  //for v1.6
+/**
+ * WiiBravo - Sony DualShock2 Controller Adapter for Wii (especially designed for Bravoman)
+ * Copyright (c) 2018 fusuian <fusuian@gmail.com>
+ *
+ * WiiBravo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * WiiBravo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with WiiBravo.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+#include <PS2X_lib.h>  // v1.6
 #include "WMExtension.h"
 #include "BravoButton.h"
 #include "portmacro.h"

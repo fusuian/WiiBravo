@@ -1,3 +1,21 @@
+/**
+ * portmacro.h - fast digitalWrite for Arduino Uno / Nano / Pro mini
+ * Copyright (c) 2018 fusuian <fusuian@gmail.com>
+ *
+ * portmacro.h is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * portmacro.h is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with portmacro.h.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #define PORT(n) ( (n <=  7)? PORTD : \
                 ( (n <= 13)? PORTB : \
                 ( (n <= 19)? PORTC : PORTB)))
