@@ -1,6 +1,7 @@
 #include <PS2X_lib.h>  //for v1.6
 #include "WMExtension.h"
 #include "BravoButton.h"
+#include "portmacro.h"
 
 #define ULONG_MAX (4294967295)
 
@@ -149,11 +150,29 @@ void delay16()
   m = micros();
 }
 
-
+byte blink_count;
+byte blink_pin;
+byte blink_mode;
+const byte blink_frames = 5;
 
 void loop() 
 {
+  if (blink_count > 0) {
+      if (--blink_count % blink_frames == 0) {
+        blink_mode = !blink_mode;
+        if (blink_mode) {
+          portOn(blink_pin);
+        } else {
+          portOff(blink_pin);
+        }
+      }
+  }
+  if (blink_count <= 0) {
+    portOff(blink_pin);
+  }
+  
   ps2x.read_gamepad(false, vibrate);
+
   up    = ps2x.Button(PSB_PAD_UP);
   down  = ps2x.Button(PSB_PAD_DOWN);
   left  = ps2x.Button(PSB_PAD_LEFT);
@@ -222,9 +241,15 @@ void loop()
 
     if (select & rb) {
       fc_mode = true;
+      blink_pin = weak_pin;
+      blink_count = 60;
+      blink_mode = HIGH; 
     }
     if (select & lb) {
       fc_mode = false;
+      blink_pin = middle_pin;
+      blink_count = 60; 
+      blink_mode = LOW; 
     }
 
   } else {
