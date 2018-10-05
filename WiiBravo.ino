@@ -160,6 +160,7 @@ void setup()
       delay(16);
     }
   }
+  blinkStart(pinx(), 60);
 
   // Wiiリモコン初期化
   WMExtension::init();
@@ -264,6 +265,15 @@ void fc_buttons()
 }
 
 
+void blinkStart(byte pin, int count)
+{
+  blink_pin = pin;
+  blink_count = count;
+  blink_mode = HIGH;
+}
+
+
+void  blinkUpdate()
 {
   if (blink_count > 0) {
       if (--blink_count % blink_frames == 0) {
@@ -278,6 +288,30 @@ void fc_buttons()
   if (blink_count <= 0) {
     portOff(blink_pin);
   }
+}
+
+
+byte pinx()
+{
+  if (ds2_mode) {
+    if (bravo_mode) {
+      return strong_pin;  
+    } else {
+      return weak_pin;
+    }
+  } else {
+    if (bravo_mode) {
+      return middle_pin;  
+    } else {
+      return weak_pin;
+    }    
+  }
+}
+
+
+void loop()
+{
+  blinkUpdate();
 
   ps2x.read_gamepad(false, vibrate);
 
@@ -315,16 +349,12 @@ void fc_buttons()
   }
 
   if (select & rb) {
-      blink_pin = weak_pin;
-      blink_count = 60;
-      blink_mode = HIGH; 
     bravo_mode = true;
+    blinkStart(pinx(), 60);
   }
   if (select & lb) {
-      blink_pin = middle_pin;
-      blink_count = 60; 
-      blink_mode = LOW; 
     bravo_mode = false;
+    blinkStart(pinx(), 60);
   }
 
   if (yb | bb) {
