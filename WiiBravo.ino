@@ -26,20 +26,29 @@
 
 
 // 動作モードフラグ
-// ベラボーマンモード：DualShock2のボタンがそれぞれ、弱中強３段階の攻撃/ジャンプボタンになる。
+
+// DualShock2モード
+// true: DualShock2が接続されている
+// false: PS1初代コントローラまたはアーケードコントローラが接続されている
+bool ds2_mode = false;
+
+// ベラボーモード
+// select+Rでオン、select+Lでオフ
+// ds2_mode が真:
+//      true: DualShock2のボタンがそれぞれ、弱中強３段階の攻撃/ジャンプボタンになる。
+//      false: クラシックコントローラ配列
+//                  R1 # A L1 : ZL x y L
+//                  R2 x o L2 : ZR b a R
+// ds2_mode が偽:
+//      true: PS1コントローラのボタンをVCのメガドライブ配列(上段)
+//            ファミコン配列(下段)で割り当てる
+//                  R1 # A L1 : ZL y b a
+//                  R2 x o L2 : ZR x y a
+//      false: クラシックコントローラ配列
+//                  R1 # A L1 : ZL x y L
+//                  R2 x o L2 : ZR b a R
 bool bravo_mode = false;
 
-// デジタルモード: PS1コントローラのボタンをストII配列で割り当てる
-//                  R1 # A L1 : ZL X Y L
-//                  R2 x o L2 : ZR B A R
-bool digital_mode = false;
-
-// ファミコンモード: PS1コントローラのボタンをVCのメガドライブ配列(上段)
-//                    ファミコン配列(下段)で割り当てる
-//                    select+Rでオン、select+Lでオフ
-//                    R1 # A L1 : ZL Y B A
-//                    R2 x o L2 : ZR X Y A
-bool fc_mode = false;
 
 // 注: 作者のアケコンはL2とR1ボタンの配線を入れ替えているため、
 //     MY_CUSTOM_CONTROLLERで以下の配列に割り当てている
@@ -50,9 +59,9 @@ const int thresh_middle =  100; //800;
 const int thresh_high   =  1000; //1800;
 
 BravoButton attack_button(thresh_middle, thresh_high);
-BravoButton   jump_button(thresh_middle, thresh_high);
+BravoButton jump_button(thresh_middle, thresh_high);
 BravoButton attack_button2(thresh_middle, thresh_high);
-BravoButton   jump_button2(thresh_middle, thresh_high);
+BravoButton jump_button2(thresh_middle, thresh_high);
 
 // インジケータLEDピン
 const byte weak_pin = 6;
@@ -133,11 +142,10 @@ void setup()
   switch(type) {
   case 0:
     Serial.println(F("Digital Controller found"));
-    digital_mode = true;
     break;
   case 1:
     Serial.println(F("DualShock Controller found"));
-    bravo_mode = true;
+    ds2_mode = true;
     break;
   default:
     Serial.println(F("Unknown Controller found"));
@@ -145,7 +153,7 @@ void setup()
     break;
   }
 
-  if (bravo_mode) {
+  if (ds2_mode) {
     while (ps2x.enablePressures() == false) {
       delay(16);
     }
@@ -181,7 +189,79 @@ byte blink_pin;
 byte blink_mode;
 const byte blink_frames = 5;
 
-void loop()
+
+void bravo_buttons()
+{
+  yb = xb = lb = 0;
+  bb = ab = rb = 0;
+  byte vsquare = ps2x.Analog(PSAB_SQUARE);
+  jump_button2.update(vsquare, bb, ab, rb);
+  byte vcircle = ps2x.Analog(PSAB_CIRCLE);
+  jump_button.update(vcircle, bb, ab, rb);
+  byte vcross = ps2x.Analog(PSAB_CROSS);
+  attack_button.update(vcross, yb, xb, lb);
+  byte vtriangle = ps2x.Analog(PSAB_TRIANGLE);
+  attack_button2.update(vtriangle, yb, xb, lb);
+}
+
+
+void digital_keys()
+{
+  lx = left? 0 : (right? 255 : clx);
+  ly = down? 0: (up? 255: cly);
+  rx = left? 0 : (right? 255 : crx);
+  ry = down? 0: (up? 255: cry);
+}
+
+
+void analog_sticks()
+{
+  // クラコンのアナログスティックのビット幅の変換はライブラリに任せる
+  lx =  ps2x.Analog(PSS_LX);
+  if (abs(lx) < threshold) { lx = 0; }
+  ly =  255 - ps2x.Analog(PSS_LY); // y軸を反転
+  if (abs(ly) < threshold) { ly = 0; }
+
+  rx =  ps2x.Analog(PSS_RX);
+  if (abs(rx) < threshold) { rx = 0; }
+  ry = 255 - ps2x.Analog(PSS_RY); // y軸を反転
+  if (abs(ry) < threshold) { ry = 0; }
+}
+
+
+void classic_buttons()
+{
+  xb = ps2x.Button(PSB_TRIANGLE);
+  ab = ps2x.Button(PSB_CIRCLE);
+  yb = ps2x.Button(PSB_SQUARE);
+  bb = ps2x.Button(PSB_CROSS);
+#ifdef MY_CUSTOM_CONTROLLER
+  lb = ps2x.Button(PSB_L1);
+  rb = ps2x.Button(PSB_R1);
+#else
+  lb = ps2x.Button(PSB_R1);
+  rb = ps2x.Button(PSB_R2);
+#endif
+}
+
+
+void fc_buttons()
+{
+  // 上段: メガドラ用   y b a : # A R1(L1)
+  // 下段: ファミコン用 x y a : x o R2(R1)
+  xb = ps2x.Button(PSB_CROSS);
+  yb = ps2x.Button(PSB_SQUARE) | ps2x.Button(PSB_CIRCLE);
+  bb = ps2x.Button(PSB_TRIANGLE);
+  lb = ps2x.Button(PSB_L1);
+  rb = ps2x.Button(PSB_R1);
+#ifdef MY_CUSTOM_CONTROLLER
+  ab = ps2x.Button(PSB_L1) | ps2x.Button(PSB_R1);
+#else
+  ab = ps2x.Button(PSB_R1) | ps2x.Button(PSB_R2);
+#endif
+}
+
+
 {
   if (blink_count > 0) {
       if (--blink_count % blink_frames == 0) {
@@ -196,7 +276,7 @@ void loop()
   if (blink_count <= 0) {
     portOff(blink_pin);
   }
-  
+
   ps2x.read_gamepad(false, vibrate);
 
   up    = ps2x.Button(PSB_PAD_UP);
@@ -216,75 +296,33 @@ void loop()
   zrb = ps2x.Button(PSB_L2);
 #endif
 
-  if (bravo_mode) {
-    yb = xb = lb = 0;
-    bb = ab = rb = 0;
-    byte vsquare = ps2x.Analog(PSAB_SQUARE);
-    jump_button2.update(vsquare, bb, ab, rb);
-    byte vcircle = ps2x.Analog(PSAB_CIRCLE);
-    jump_button.update(vcircle, bb, ab, rb);
-    byte vcross = ps2x.Analog(PSAB_CROSS);
-    attack_button.update(vcross, yb, xb, lb);
-    byte vtriangle = ps2x.Analog(PSAB_TRIANGLE);
-    attack_button2.update(vtriangle, yb, xb, lb);
-  } else if (fc_mode) {
-    // 上段: メガドラ用   Y B A : # A R1(L1)
-    // 下段: ファミコン用 X Y A : x o R2(R1)
-    xb = ps2x.Button(PSB_CROSS);
-    yb = ps2x.Button(PSB_SQUARE) | ps2x.Button(PSB_CIRCLE);
-    bb = ps2x.Button(PSB_TRIANGLE);
-    lb = ps2x.Button(PSB_L1);
-    rb = ps2x.Button(PSB_R1);
-#ifdef MY_CUSTOM_CONTROLLER
-    ab = ps2x.Button(PSB_L1) | ps2x.Button(PSB_R1);
-#else
-    ab = ps2x.Button(PSB_R1) | ps2x.Button(PSB_R2);
-#endif
+  if (ds2_mode) {
+    analog_sticks();
+    if (bravo_mode) {
+      bravo_buttons();
+    } else {
+      classic_buttons();
+    }
   } else {
-    xb = ps2x.Button(PSB_TRIANGLE);
-    ab = ps2x.Button(PSB_CIRCLE);
-    yb = ps2x.Button(PSB_SQUARE);
-    bb = ps2x.Button(PSB_CROSS);
-#ifdef MY_CUSTOM_CONTROLLER
-    lb = ps2x.Button(PSB_L1);
-    rb = ps2x.Button(PSB_R1);
-#else
-    lb = ps2x.Button(PSB_R1);
-    rb = ps2x.Button(PSB_R2);
-#endif
+    digital_keys();
+    if (bravo_mode) {
+      fc_buttons();
+    } else {
+      classic_buttons();
+    }
   }
 
-  if (digital_mode) {
-    lx = left? 0 : (right? 255 : clx);
-    ly = down? 0: (up? 255: cly);
-    rx = crx;
-    ry = cry;
-
-    if (select & rb) {
-      fc_mode = true;
+  if (select & rb) {
       blink_pin = weak_pin;
       blink_count = 60;
       blink_mode = HIGH; 
-    }
-    if (select & lb) {
-      fc_mode = false;
+    bravo_mode = true;
+  }
+  if (select & lb) {
       blink_pin = middle_pin;
       blink_count = 60; 
       blink_mode = LOW; 
-    }
-
-  } else {
-    // クラコンの左アナログスティックは6bit値(ライブラリ側で変換)、y軸を反転
-    lx =  ps2x.Analog(PSS_LX);
-    if (abs(lx) < 16) { lx = 0; }
-    ly =  255 - ps2x.Analog(PSS_LY);
-    if (abs(ly) < 16) { ly = 0; }
-
-    // クラコンの右アナログスティックは5bit値(ライブラリ側で変換)、y軸を反転
-    rx =  ps2x.Analog(PSS_RX);
-    if (abs(rx) < 16) { rx = 0; }
-    ry = 255 - ps2x.Analog(PSS_RY);
-    if (abs(ry) < 16) { ry = 0; }
+    bravo_mode = false;
   }
 
   if (yb | bb) {
