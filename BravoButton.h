@@ -31,20 +31,20 @@ public:
     }
 
 
-    void update(int vsquare, byte &yb, byte &xb, byte &lb)
+    void update(byte vsquare, byte &yb, byte &xb, byte &lb)
     {
       if (fsquare == false && vsquare > 0 && psquare > 0) {
 //        Serial.print(psquare);
 //        Serial.print(" * ");
 //        Serial.print(vsquare);
 //        Serial.print(" = ");
-        vsquare *= psquare;
-//        Serial.print(vsquare);
+        uint16_t value = vsquare * psquare;
+//        Serial.print(value);
 //        Serial.print(": ");
-        if (vsquare > thresh_high) {
+        if (value > thresh_high) {
 //          Serial.println(": strong!");
           lb = 1;
-        } else if (vsquare > thresh_middle) {
+        } else if (value > thresh_middle) {
 //          Serial.println(": middle.");
           xb = 1;
         } else {
@@ -62,7 +62,7 @@ private:
     int thresh_middle;
     int thresh_high;
 
-    int vsquare, psquare;
+    byte psquare;
     bool fsquare;
 };
 
