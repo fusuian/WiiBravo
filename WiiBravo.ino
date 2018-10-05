@@ -24,6 +24,8 @@
 
 #define ULONG_MAX (4294967295)
 
+// DualShock2のアナログスティックのしきい値
+const byte threshold = 24;
 
 // 動作モードフラグ
 
