@@ -34,11 +34,11 @@ public:
     void update(byte vsquare, byte &yb, byte &xb, byte &lb)
     {
       if (fsquare == false && vsquare > 0 && psquare > 0) {
+        uint16_t value = vsquare * psquare;
 //        Serial.print(psquare);
 //        Serial.print(" * ");
 //        Serial.print(vsquare);
 //        Serial.print(" = ");
-        uint16_t value = vsquare * psquare;
 //        Serial.print(value);
 //        Serial.print(": ");
         if (value > middle_max) {
