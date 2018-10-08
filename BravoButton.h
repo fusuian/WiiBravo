@@ -24,10 +24,10 @@
 class BravoButton
 {
 public:
-    BravoButton(int thresh_middle, int thresh_high) : fsquare(false)
+    BravoButton(int low_max, int middle_max) : fsquare(false)
     {
-        this->thresh_middle = thresh_middle;
-        this->thresh_high = thresh_high;
+        this->low_max = low_max;
+        this->middle_max = middle_max;
     }
 
 
@@ -41,10 +41,10 @@ public:
         uint16_t value = vsquare * psquare;
 //        Serial.print(value);
 //        Serial.print(": ");
-        if (value > thresh_high) {
+        if (value > middle_max) {
 //          Serial.println(": strong!");
           lb = 1;
-        } else if (value > thresh_middle) {
+        } else if (value > low_max) {
 //          Serial.println(": middle.");
           xb = 1;
         } else {
@@ -59,8 +59,8 @@ public:
     }
 
 private:
-    int thresh_middle;
-    int thresh_high;
+    int low_max;
+    int middle_max;
 
     byte psquare;
     bool fsquare;

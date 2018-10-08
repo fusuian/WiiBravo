@@ -24,6 +24,10 @@
 
 #define ULONG_MAX (4294967295)
 
+// ベラボーマンモードでの、弱中強のしきい値
+const byte      low_max =  128;
+const uint16_t  middle_max   =  1000;
+
 // DualShock2のアナログスティックのしきい値
 const byte threshold = 24;
 
@@ -46,13 +50,10 @@ bool ds2_mode = false;
 bool bravo_mode = false;
 
 
-const int thresh_middle =  100; //800;
-const int thresh_high   =  1000; //1800;
-
-BravoButton attack_button(thresh_middle, thresh_high);
-BravoButton jump_button(thresh_middle, thresh_high);
-BravoButton attack_button2(thresh_middle, thresh_high);
-BravoButton jump_button2(thresh_middle, thresh_high);
+BravoButton attack_button(low_max, middle_max);
+BravoButton jump_button(low_max, middle_max);
+BravoButton attack_button2(low_max, middle_max);
+BravoButton jump_button2(low_max, middle_max);
 
 // インジケータLEDピン
 const byte weak_pin = 6;
