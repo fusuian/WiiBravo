@@ -207,6 +207,14 @@ void bravo_buttons()
   attack_button.update(vcross, yb, xb, lb);
   byte vtriangle = ps2x.Analog(PSAB_TRIANGLE);
   attack_button2.update(vtriangle, yb, xb, lb);
+
+#ifdef MY_CUSTOM_CONTROLLER
+  lb = ps2x.Button(PSB_L1);
+  rb = ps2x.Button(PSB_R1);
+#else
+  lb = ps2x.Button(PSB_R1);
+  rb = ps2x.Button(PSB_R2);
+#endif
 }
 
 
@@ -355,11 +363,12 @@ void loop()
     }
   }
 
-  if (select & rb) {
+  // モードが変わっても切り替えに使うボタンはL1/R1
+  if (select & ps2x.Button(PSB_L1)) {
     bravo_mode = true;
     blinkStart(pinx(), 60);
   }
-  if (select & lb) {
+  if (select & ps2x.Button(PSB_R1)) {
     bravo_mode = false;
     blinkStart(pinx(), 60);
   }
