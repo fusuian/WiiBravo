@@ -39,16 +39,10 @@ bool ds2_mode = false;
 // ds2_mode が真:
 //      true: DualShock2のボタンがそれぞれ、弱中強３段階の攻撃/ジャンプボタンになる。
 //      false: クラシックコントローラ配列
-//                  R1 # A L1 : ZL x y L
-//                  R2 x o L2 : ZR b a R
 // ds2_mode が偽:
 //      true: PS1コントローラのボタンをVCのメガドライブ配列(上段)
-//            ファミコン配列(下段)で割り当てる
-//                  R1 # A L1 : ZL y b a
-//                  R2 x o L2 : ZR x y a
+//            ファミコン配列(下段)に割り当てる
 //      false: クラシックコントローラ配列
-//                  R1 # A L1 : ZL x y L
-//                  R2 x o L2 : ZR b a R
 bool bravo_mode = false;
 
 
