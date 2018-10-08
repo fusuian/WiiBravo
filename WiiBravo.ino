@@ -52,11 +52,6 @@ bool ds2_mode = false;
 bool bravo_mode = false;
 
 
-// 注: 作者のアケコンはL2とR1ボタンの配線を入れ替えているため、
-//     MY_CUSTOM_CONTROLLERで以下の配列に割り当てている
-#define MY_CUSTOM_CONTROLLER
-
-
 const int thresh_middle =  100; //800;
 const int thresh_high   =  1000; //1800;
 
@@ -207,14 +202,6 @@ void bravo_buttons()
   attack_button.update(vcross, yb, xb, lb);
   byte vtriangle = ps2x.Analog(PSAB_TRIANGLE);
   attack_button2.update(vtriangle, yb, xb, lb);
-
-#ifdef MY_CUSTOM_CONTROLLER
-  lb = ps2x.Button(PSB_L1);
-  rb = ps2x.Button(PSB_R1);
-#else
-  lb = ps2x.Button(PSB_R1);
-  rb = ps2x.Button(PSB_R2);
-#endif
 }
 
 
@@ -248,13 +235,10 @@ void classic_buttons()
   ab = ps2x.Button(PSB_CIRCLE);
   yb = ps2x.Button(PSB_SQUARE);
   bb = ps2x.Button(PSB_CROSS);
-#ifdef MY_CUSTOM_CONTROLLER
+  
   lb = ps2x.Button(PSB_L1);
   rb = ps2x.Button(PSB_R1);
-#else
-  lb = ps2x.Button(PSB_R1);
-  rb = ps2x.Button(PSB_R2);
-#endif
+
   // L1/R1のアナログ値をL/Rトリガー値としてセット。
   // (VCAのアサルト以外に、トリガー値使ってるゲームあるの？)
   lt =  ps2x.Analog(PSAB_L1);
@@ -272,11 +256,6 @@ void fc_buttons()
   lb = ps2x.Button(PSB_L1);
   rb = ps2x.Button(PSB_R1);
   lt = rt = 0;
-#ifdef MY_CUSTOM_CONTROLLER
-  ab = ps2x.Button(PSB_L1) | ps2x.Button(PSB_R1);
-#else
-  ab = ps2x.Button(PSB_R1) | ps2x.Button(PSB_R2);
-#endif
 }
 
 
@@ -339,13 +318,8 @@ void loop()
   select = ps2x.Button(PSB_SELECT);
   home = up && select;
 
-#ifdef MY_CUSTOM_CONTROLLER
   zlb = ps2x.Button(PSB_L2);
   zrb = ps2x.Button(PSB_R2);
-#else
-  zlb = ps2x.Button(PSB_L1);
-  zrb = ps2x.Button(PSB_L2);
-#endif
 
   if (ds2_mode) {
     analog_sticks();
