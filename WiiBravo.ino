@@ -240,6 +240,20 @@ void classic_buttons()
 }
 
 
+void ac_buttons()
+{
+  ab = ps2x.Button(PSB_CIRCLE);
+  bb = ps2x.Button(PSB_CROSS);
+  xb = ps2x.Button(PSB_TRIANGLE);
+  yb = ps2x.Button(PSB_SQUARE);
+  lb = ps2x.Button(PSB_L1);
+  rb = ps2x.Button(PSB_R1);
+
+  lt = lb*255;
+  rt = rb*255;
+}
+
+
 void fc_buttons()
 {
   lt = rt = 0;
@@ -332,7 +346,7 @@ void loop()
     if (bravo_mode) {
       fc_buttons();
     } else {
-      classic_buttons();
+      ac_buttons();
     }
   }
 
