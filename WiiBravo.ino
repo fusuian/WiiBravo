@@ -29,7 +29,7 @@ const byte      low_max =  128;
 const uint16_t  middle_max   =  1000;
 
 // DualShock2のアナログスティックのしきい値
-const byte threshold = 24;
+const byte threshold = 64;
 
 // 動作モードフラグ
 
