@@ -94,6 +94,7 @@ byte start, select, home;
 byte ab, bb, xb, yb;   // A/B/X/Yボタン
 byte lb, rb, zlb, zrb; // L/R/ZL/ZRボタン
 byte lx, ly, rx, ry;   // アナログスティックL/R
+byte lt, rt;           // アナログトリガーL/R
 
 byte clx, cly, crx, cry;  // アナログスティックの中央値
 
@@ -195,6 +196,7 @@ const byte blink_frames = 5;
 
 void bravo_buttons()
 {
+  lt = rt = 0;
   yb = xb = lb = 0;
   bb = ab = rb = 0;
   byte vsquare = ps2x.Analog(PSAB_SQUARE);
@@ -245,6 +247,10 @@ void classic_buttons()
   lb = ps2x.Button(PSB_R1);
   rb = ps2x.Button(PSB_R2);
 #endif
+  // L1/R1のアナログ値をL/Rトリガー値としてセット。
+  // (VCAのアサルト以外に、トリガー値使ってるゲームあるの？)
+  lt =  ps2x.Analog(PSAB_L1);
+  rt =  ps2x.Analog(PSAB_R1);
 }
 
 
@@ -257,6 +263,7 @@ void fc_buttons()
   bb = ps2x.Button(PSB_TRIANGLE);
   lb = ps2x.Button(PSB_L1);
   rb = ps2x.Button(PSB_R1);
+  lt = rt = 0;
 #ifdef MY_CUSTOM_CONTROLLER
   ab = ps2x.Button(PSB_L1) | ps2x.Button(PSB_R1);
 #else
@@ -378,7 +385,7 @@ void loop()
     lb, rb,
     select, start, home,
     lx, ly, rx, ry,
-    zlb, zrb, lb, rb);
+    zlb, zrb, lt, rt);
 
   delay16();
 }
