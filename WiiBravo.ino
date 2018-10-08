@@ -242,14 +242,19 @@ void classic_buttons()
 
 void fc_buttons()
 {
-  // 上段: メガドラ用   y b a : # A R1(L1)
-  // 下段: ファミコン用 x y a : x o R2(R1)
-  xb = ps2x.Button(PSB_CROSS);
-  yb = ps2x.Button(PSB_SQUARE) | ps2x.Button(PSB_CIRCLE);
-  bb = ps2x.Button(PSB_TRIANGLE);
-  lb = ps2x.Button(PSB_L1);
-  rb = ps2x.Button(PSB_R1);
   lt = rt = 0;
+  yb = xb = lb = 0;
+  bb = ab = rb = 0;
+
+  // 上段: メガドラ用   y b a : # A L1
+  yb |= ps2x.Button(PSB_SQUARE);
+  bb |= ps2x.Button(PSB_TRIANGLE);
+  ab |= ps2x.Button(PSB_L1);
+  
+  // 下段: ファミコン用 x y a : x o R1
+  xb |= ps2x.Button(PSB_CROSS);
+  yb |= ps2x.Button(PSB_CIRCLE);
+  ab |= ps2x.Button(PSB_R1);
 }
 
 
