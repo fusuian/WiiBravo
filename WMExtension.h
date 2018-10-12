@@ -1,6 +1,7 @@
 /*
 * Wii RetroPad Adapter - Nintendo Wiimote adapter for retro-controllers!
-* Copyright (c) 2011 Bruno Freitas - bruno@brunofreitas.com
+* Copyright (c) 2018 ASAHI,Michiharu <fusuian@gmail.com>
+* Based on code by Copyright (c) 2011 Bruno Freitas - bruno@brunofreitas.com
 *
 * Wiimote Extension class based on the arduino-wiimote library (c) by
 * Peter Brinkmann: https://gitorious.org/randomstuff/arduino-wiimote

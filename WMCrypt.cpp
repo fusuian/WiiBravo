@@ -1,7 +1,8 @@
 /*
 * Wii RetroPad Adapter - Nintendo Wiimote adapter for retro-controllers!
-* Copyright (c) 2011 Bruno Freitas - bruno@brunofreitas.com
-* Copyright (C) 2008-2009 H�ctor Mart�n <hector@marcansoft.com>
+* Copyright (c) 2018 ASAHI,Michiharu <fusuian@gmail.com>
+* Based on code by Copyright (c) 2011 Bruno Freitas - bruno@brunofreitas.com
+* and Copyright (C) 2008-2009 H�ctor Mart�n <hector@marcansoft.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
