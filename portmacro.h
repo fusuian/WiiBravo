@@ -1,6 +1,6 @@
 /**
  * portmacro.h - fast digitalWrite for Arduino Uno / Nano / Pro mini
- * Copyright (c) 2018 fusuian <fusuian@gmail.com>
+ * Copyright (c) 2018 ASAHI,Michiharu <fusuian@gmail.com>
  *
  * portmacro.h is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

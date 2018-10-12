@@ -1,6 +1,6 @@
 /**
  * WiiBravo - Sony DualShock2 Controller Adapter for Wii (especially designed for Bravoman)
- * Copyright (c) 2018 fusuian <fusuian@gmail.com>
+ * Copyright (c) 2018 ASAHI,Michiharu <fusuian@gmail.com>
  *
  * WiiBravo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,7 +230,7 @@ void classic_buttons()
   ab = ps2x.Button(PSB_CIRCLE);
   yb = ps2x.Button(PSB_SQUARE);
   bb = ps2x.Button(PSB_CROSS);
-  
+
   lb = ps2x.Button(PSB_L1);
   rb = ps2x.Button(PSB_R1);
 
@@ -265,7 +265,7 @@ void fc_buttons()
   yb |= ps2x.Button(PSB_SQUARE);
   bb |= ps2x.Button(PSB_TRIANGLE);
   ab |= ps2x.Button(PSB_L1);
-  
+
   // 下段: ファミコン用 x y a : x o R1
   xb |= ps2x.Button(PSB_CROSS);
   yb |= ps2x.Button(PSB_CIRCLE);
@@ -303,16 +303,16 @@ byte pinx()
 {
   if (ds2_mode) {
     if (bravo_mode) {
-      return strong_pin;  
+      return strong_pin;
     } else {
       return weak_pin;
     }
   } else {
     if (bravo_mode) {
-      return middle_pin;  
+      return middle_pin;
     } else {
       return weak_pin;
-    }    
+    }
   }
 }
 

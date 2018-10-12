@@ -1,6 +1,6 @@
 /**
  * WiiBravo - Sony DualShock2 Controller Adapter for Wii (especially designed for Bravoman)
- * Copyright (c) 2018 fusuian <fusuian@gmail.com>
+ * Copyright (c) 2018 ASAHI,Michiharu <fusuian@gmail.com>
  *
  * This file is part of WiiBravo.
  *
